@@ -1,0 +1,7 @@
+# Local environment variables; retain the safe template.
+.env
+.env.*
+!.env.example
+
+# Local Docker/database artifacts.
+*.db

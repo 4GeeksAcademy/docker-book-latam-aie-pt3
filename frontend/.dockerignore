@@ -1,0 +1,14 @@
+# No enviar variables locales o secretos a la construcción de la imagen.
+.env
+.env.*
+!.env.example
+
+# npm ci instala dependencias propias de la imagen.
+node_modules/
+
+# El bundle se construye dentro de Docker.
+dist/
+
+# Metadatos y preferencias locales del editor.
+.git/
+.vscode/

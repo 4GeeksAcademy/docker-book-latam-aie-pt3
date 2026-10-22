@@ -1,10 +1,11 @@
 from pathlib import Path
+import os
 
 from sqlmodel import SQLModel, create_engine, Session
 
-# Ruta del archivo SQLite (dentro de /app en Docker, o backend/ en local)
+# En local conserva backend/books.db; Docker Compose la cambia a /data/books.db.
 BASE_DIR = Path(__file__).resolve().parent
-DATABASE_URL = f"sqlite:///{BASE_DIR / 'books.db'}"
+DATABASE_URL = os.getenv("DATABASE_URL", f"sqlite:///{BASE_DIR / 'books.db'}")
 
 # check_same_thread=False permite que FastAPI use la conexión desde múltiples hilos
 engine = create_engine(DATABASE_URL, echo=False, connect_args={"check_same_thread": False})

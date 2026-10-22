@@ -1,0 +1,16 @@
+# Evita enviar configuración local/secretos al contexto de build.
+.env
+.env.*
+!.env.example
+
+# No copiar entornos virtuales ni cachés del equipo anfitrión.
+.venv/
+__pycache__/
+*.py[cod]
+
+# La base debe vivir en el volumen, no dentro de la imagen.
+books.db
+*.db
+
+# Excluir metadatos Git.
+.git/

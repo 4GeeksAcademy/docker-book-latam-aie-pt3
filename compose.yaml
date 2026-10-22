@@ -1,0 +1,32 @@
+services:
+  backend:
+    # API en modo producción, sin autoreload.
+    build:
+      context: ./backend
+      target: production
+    environment:
+      # Permite sobreescribir la ruta, conservando SQLite persistente por defecto.
+      DATABASE_URL: ${DATABASE_URL:-sqlite:////data/books.db}
+    volumes:
+      # Sobrevive a recrear/actualizar los contenedores.
+      - books_data:/data
+    expose:
+      # Accesible en la red interna de Compose, no publicado directamente.
+      - "8001"
+    restart: unless-stopped
+
+  frontend:
+    # Bundle React servido por Nginx.
+    build:
+      context: ./frontend
+      target: production
+    ports:
+      # Aplicación y API proxy en http://localhost:8080.
+      - "${FRONTEND_PORT:-8080}:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  # Persistencia de la base SQLite.
+  books_data:

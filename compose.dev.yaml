@@ -1,0 +1,38 @@
+services:
+  backend:
+    # API en desarrollo con autoreload al cambiar el código.
+    build:
+      context: ./backend
+      target: development
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-sqlite:////data/books.db}
+    ports:
+      # Publica API y documentación para pruebas directas.
+      - "8001:8001"
+    volumes:
+      # Código montado para hot reload; SQLite permanece en volumen separado.
+      - ./backend:/app
+      - books_data:/data
+    restart: unless-stopped
+
+  frontend:
+    # Vite en desarrollo, en lugar de Nginx.
+    build:
+      context: ./frontend
+      target: development
+    environment:
+      # DNS interno de Compose para llegar al backend.
+      VITE_API_PROXY_TARGET: http://backend:8001
+    ports:
+      - "3001:3001"
+    volumes:
+      # Refleja cambios del frontend, conservando node_modules de la imagen.
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  # Se mantiene entre reinicios del stack.
+  books_data:
